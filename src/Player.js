@@ -1,26 +1,40 @@
 import React from 'react';
-import shaka from 'shaka-player/dist/shaka-player.compiled';
+import shaka from 'shaka-player/dist/shaka-player.ui';
+import 'shaka-player/dist/controls.css'
 
 class Player extends React.Component {
+    constructor() {
+        super();
+        this.playerRef = React.createRef();
+        this.uiRef = React.createRef();
+    }
 
     componentDidMount() {
-        let video = document.getElementById('video');
-        let player = new shaka.Player(video);
-        window.player = player;
-        player.load("https://storage.googleapis.com/shaka-demo-assets/sintel/dash.mpd").then(function() {
-            console.log('The video has now been loaded!');
-        });
+        const videoElement = this.playerRef.current;
+        const player = new shaka.Player(videoElement);
+        new shaka.ui.Overlay(
+            player,
+            this.uiRef.current,
+            videoElement
+        )
+
+
+        player.load(this.props.video.mpd).then(() => {
+            setInterval(
+                () => {
+                    this.props.timeHandler(videoElement.currentTime)
+                }, 1000
+            )
+        })
     }
 
     render() {
-        return(
-            <div className="container">
-                <div className="row">
-                    <video id="video"
-                           width="640"
-                           poster="//shaka-player-demo.appspot.com/assets/poster.jpg"
-                           controls autoPlay></video>
-                </div>
+        return (
+            <div style={{width:'100%'}} ref={this.uiRef}>
+                <video ref={this.playerRef}
+                       width="100%"
+                       poster={this.props.video.poster}
+                       ></video>
             </div>)
     }
 }
