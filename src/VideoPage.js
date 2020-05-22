@@ -11,15 +11,17 @@ class VideoPage extends React.Component {
 
     componentDidMount() {
         firebase.initializeApp(CONFIG);
-        firebase.database().ref('videos/' + this.props.match.params.id + '/').once('value').then(function(snapshot) {
-            console.log(snapshot)
+        firebase.firestore().collection("videos").doc(this.props.match.params.id).get().then((doc) => {
+            if (doc.exists) {
+                this.setState({videoData:doc.data()})
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
         });
 
-    }
-
-    testVideo = {
-        poster: "https://shaka-player-demo.appspot.com/assets/poster.jpg",
-        mpd: "https://storage.googleapis.com/shaka-demo-assets/tos-ttml/dash.mpd"
     }
 
     videoTimeHandler = (time) => {
@@ -30,7 +32,7 @@ class VideoPage extends React.Component {
         return(
             <div className="container">
                 <div className="row">
-                    <Player timeHandler={this.videoTimeHandler} video={this.testVideo}/>
+                    <Player timeHandler={this.videoTimeHandler} video={this.state.videoData}/>
                 </div>
                 <div className="row">
                     {this.state.videoTime}
