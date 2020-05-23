@@ -5,6 +5,7 @@ import 'shaka-player/dist/controls.css'
 class Player extends React.Component {
     constructor(props) {
         super(props);
+        this.timeRefInterval = null;
         this.playerRef = React.createRef();
         this.uiRef = React.createRef();
         this.player = null;
@@ -14,9 +15,12 @@ class Player extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        clearInterval(this.timeRefInterval)
+    }
+
     componentDidMount() {
         const videoElement = this.playerRef.current;
-        const SEGMENT_SIZE = 2;
         this.player = new shaka.Player(videoElement);
         new shaka.ui.Overlay(
             this.player,
@@ -24,9 +28,9 @@ class Player extends React.Component {
             videoElement
         )
 
-        setInterval(() => {
+        this.timeRefInterval = setInterval(() => {
             this.props.timeHandler(this.playerRef.current.currentTime);
-            this.setState({codec:this.player.getVariantTracks().filter((track) => {if(track.active == true){return track}})[0].videoCodec})
+            //this.setState({codec:this.player.getVariantTracks().filter(track => {if(track.active === true){return track}})[0].videoCodec})
             //console.log(this.player.getStats())
         },1000)
     }

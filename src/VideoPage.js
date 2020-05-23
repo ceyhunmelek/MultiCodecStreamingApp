@@ -12,7 +12,9 @@ class VideoPage extends React.Component {
     }
 
     componentDidMount() {
-        firebase.initializeApp(CONFIG);
+        if (firebase.apps.length === 0) {
+            firebase.initializeApp(CONFIG);
+        }
         firebase.firestore().collection("videos").doc(this.props.match.params.id).get().then((doc) => {
             if (doc.exists) {
                 this.setState({videoData:doc.data()})
