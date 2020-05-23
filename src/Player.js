@@ -30,7 +30,7 @@ class Player extends React.Component {
 
         this.timeRefInterval = setInterval(() => {
             this.props.timeHandler(this.playerRef.current.currentTime);
-            //this.setState({codec:this.player.getVariantTracks().filter(track => {if(track.active === true){return track}})[0].videoCodec})
+            this.setState({codec:this.player.getVariantTracks().filter(track => {if(track.active === true){return track}})[0].videoCodec})
             //console.log(this.player.getStats())
         },1000)
     }

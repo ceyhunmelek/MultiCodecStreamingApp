@@ -12,7 +12,9 @@ class VideoListItem extends React.Component {
                     <div className="col-md-8">
                         <div className="card-body">
                             <Link to={"/video/"+ this.props.video.id}><h5 className="card-title">{this.props.video.title}</h5></Link>
-                            <p className="card-text">{this.props.video.desc}</p>
+                            <p className="card-text">This is a wider card with supporting text below as a natural
+                                lead-in to
+                                additional content. This content is a little bit longer.</p>
                         </div>
                     </div>
                 </div>
