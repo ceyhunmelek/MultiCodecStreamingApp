@@ -1,8 +1,10 @@
 import React from 'react';
 import Player from "./Player";
 
-import * as firebase from "firebase";
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 import CONFIG from './firebaseConfig';
+import ProfitChart from "./ProfitChart";
 
 class VideoPage extends React.Component {
     state = {
@@ -35,7 +37,7 @@ class VideoPage extends React.Component {
                     <Player timeHandler={this.videoTimeHandler} video={this.state.videoData}/>
                 </div>
                 <div className="row">
-                    {this.state.videoTime}
+                    <ProfitChart videoTime={this.state.videoTime} />
                 </div>
             </div>)
     }
