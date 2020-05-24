@@ -11,7 +11,7 @@ class Player extends React.Component {
         this.player = null;
         this.state = {
             isVideoLoaded: false,
-            codec:""
+            codec: ""
         }
     }
 
@@ -30,26 +30,34 @@ class Player extends React.Component {
 
         this.timeRefInterval = setInterval(() => {
             this.props.timeHandler(this.playerRef.current.currentTime);
-            this.setState({codec:this.player.getVariantTracks().filter(track => {if(track.active === true){return track}})[0].videoCodec})
+            this.setState({
+                codec: this.player.getVariantTracks().filter(track => {
+                    if (track.active === true) {
+                        return track
+                    }
+                })[0].videoCodec
+            })
             //console.log(this.player.getStats())
-        },1000)
+        }, 1000)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(!this.state.isVideoLoaded){
+        if (!this.state.isVideoLoaded) {
             this.player.load(this.props.video.mpd)
             this.playerRef.current.poster = this.props.video.poster;
-            this.setState({isVideoLoaded:true})
+            this.setState({isVideoLoaded: true})
         }
     }
 
     render() {
         return (
-            <div style={{width:'100%'}} ref={this.uiRef}>
+            <div style={{width: '100%'}} ref={this.uiRef}>
                 <video ref={this.playerRef}
                        width="100%"
                        autoPlay={true}></video>
-                {this.state.codec}
+                <p style={{color:'red',fontWeight:'bold',fontSize:'25pt',position:"fixed",right:"0px",top:'0px'}}>
+                    {this.state.codec}
+                </p>
             </div>)
     }
 }
