@@ -8,7 +8,13 @@ import ProfitChart from "./ProfitChart";
 
 class VideoPage extends React.Component {
     state = {
-        videoTime: 0
+        chartInfo: []
+    }
+
+    chartInfoHandler = (info) => {
+        this.setState({
+            chartInfo: [...this.state.chartInfo,info]
+        })
     }
 
     componentDidMount() {
@@ -25,21 +31,16 @@ class VideoPage extends React.Component {
         }).catch(function(error) {
             console.log("Error getting document:", error);
         });
-
-    }
-
-    videoTimeHandler = (time) => {
-        this.setState({videoTime:time})
     }
 
     render() {
         return(
             <div className="container">
                 <div className="row">
-                    <Player timeHandler={this.videoTimeHandler} video={this.state.videoData}/>
+                    <Player chartHandler={this.chartInfoHandler} video={this.state.videoData}/>
                 </div>
                 <div className="row">
-                    <ProfitChart videoTime={this.state.videoTime} />
+                    <ProfitChart chartData={this.state.chartInfo} />
                 </div>
             </div>)
     }

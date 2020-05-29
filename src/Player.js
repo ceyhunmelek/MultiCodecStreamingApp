@@ -10,8 +10,7 @@ class Player extends React.Component {
         this.uiRef = React.createRef();
         this.player = null;
         this.state = {
-            isVideoLoaded: false,
-            codec: ""
+            isVideoLoaded: false
         }
     }
 
@@ -28,16 +27,21 @@ class Player extends React.Component {
             videoElement
         )
 
+        let prevEstimated = 0;
         this.timeRefInterval = setInterval(() => {
-            this.props.timeHandler(this.playerRef.current.currentTime);
+            let currentStats = this.player.getStats();
+            if(currentStats.stateHistory[currentStats.stateHistory.length -1].state === "playing" && prevEstimated != currentStats.estimatedBandwidth){
+                this.props.chartHandler(currentStats);
+                prevEstimated = currentStats.estimatedBandwidth;
+            }
+            /* To Show codec*/
             this.setState({
                 codec: this.player.getVariantTracks().filter(track => {
                     if (track.active === true) {
                         return track
                     }
                 })[0].videoCodec
-            })
-            //console.log(this.player.getStats())
+            });
         }, 1000)
     }
 
