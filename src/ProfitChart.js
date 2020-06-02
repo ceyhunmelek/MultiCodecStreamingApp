@@ -11,7 +11,7 @@ class ProfitChart extends React.Component {
                     data={this.props.chartData}
                     margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
                     xScale={{ type: 'point' }}
-                    yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
+                    yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
                     axisTop={null}
                     axisRight={null}
                     axisBottom={{
@@ -19,16 +19,17 @@ class ProfitChart extends React.Component {
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: 0,
-                        legend: 'transportation',
+                        legend: 'Second',
                         legendOffset: 36,
-                        legendPosition: 'middle'
+                        legendPosition: 'middle',
+                        format: s => {let minute = Math.trunc(s/60);let second = s % 60;return ((minute < 10) ? '0' : '') + minute + ':' + ((second < 10) ? '0' : '') + second;}
                     }}
                     axisLeft={{
                         orient: 'left',
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: 0,
-                        legend: 'count',
+                        legend: 'Mbps',
                         legendOffset: -40,
                         legendPosition: 'middle'
                     }}
