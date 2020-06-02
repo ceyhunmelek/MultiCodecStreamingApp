@@ -64,9 +64,6 @@ class Player extends React.Component {
                 <video ref={this.playerRef}
                        width="100%"
                        autoPlay={true}></video>
-                <p style={{color:'red',fontWeight:'bold',fontSize:'25pt',position:"fixed",right:"0px",top:'0px'}}>
-                    {this.state.codec}
-                </p>
             </div>)
     }
 }
