@@ -27,20 +27,25 @@ class Player extends React.Component {
             videoElement
         )
 
-        let prevEstimated = 0;
         this.timeRefInterval = setInterval(() => {
             let currentStats = this.player.getStats();
-            if(currentStats.stateHistory[currentStats.stateHistory.length -1].state === "playing" && prevEstimated != currentStats.estimatedBandwidth){
-                this.props.chartHandler(currentStats);
-                prevEstimated = currentStats.estimatedBandwidth;
+            let codec = this.player.getVariantTracks().filter(track => {
+                if (track.active === true) {
+                    return track
+                }
+            })[0].videoCodec
+            if(codec.toLowerCase().includes("vp")){
+                codec = "VP9"
+            }else if(codec.toLowerCase().includes("hev")){
+                codec = "HEVC"
+            }else{
+                codec = "AVC"
             }
-            /* To Show codec*/
+            if(currentStats.stateHistory[currentStats.stateHistory.length -1].state === "playing"){
+                this.props.chartHandler(currentStats,codec);
+            }
             this.setState({
-                codec: this.player.getVariantTracks().filter(track => {
-                    if (track.active === true) {
-                        return track
-                    }
-                })[0].videoCodec
+                codec: codec
             });
         }, 1000)
     }
