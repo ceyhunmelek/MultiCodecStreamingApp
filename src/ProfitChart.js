@@ -3,38 +3,12 @@ import {ResponsiveLine} from "@nivo/line";
 import 'shaka-player/dist/controls.css'
 
 class ProfitChart extends React.Component {
-
-    state = {
-        data : [{
-            "id": "vp9",
-            "color": "hsl(331, 70%, 50%)",
-            "data": [
-                {
-                    "x": "plane",
-                    "y": 49
-                },
-                {
-                    "x": "helicopter",
-                    "y": 213
-                },
-                {
-                    "x": "boat",
-                    "y": 118
-                }
-            ]
-        }]
-    };
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.props.chartData)
-    }
-
     render() {
         return (
             <div style={{width:'100%',height:'300px'}}>
 
                 <ResponsiveLine
-                    data={this.state.data}
+                    data={this.props.chartData}
                     margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
                     xScale={{ type: 'point' }}
                     yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
