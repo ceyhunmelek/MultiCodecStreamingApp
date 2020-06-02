@@ -33,22 +33,10 @@ class VideoPage extends React.Component {
         }
         let bitrateList = {
             vp9: {
-                480: null,
-                720: null,
-                1080: null,
-                2160: null
             },
             h264: {
-                480: null,
-                720: null,
-                1080: null,
-                2160: null
             },
             h265: {
-                480: null,
-                720: null,
-                1080: null,
-                2160: null
             }
         }
         firebase.firestore().collection("videos").doc(this.props.match.params.id).get().then((doc) => {
@@ -60,15 +48,19 @@ class VideoPage extends React.Component {
                         let parser = new xml2js.Parser();
                         parser.parseStringPromise(response).then((parsedXML) => {
                             parsedXML.MPD.Period[0].AdaptationSet.forEach(adaptationset => {
-                                adaptationset.Representation.forEach(representation => {
-                                    if (representation.$.codecs.includes("vp")) {
-                                        bitrateList.vp9[representation.$.height] = representation.$.bandwidth
-                                    } else if (representation.$.codecs.includes("avc")) {
-                                        bitrateList.h264[representation.$.height] = representation.$.bandwidth
-                                    } else if (representation.$.codecs.includes("hev")) {
-                                        bitrateList.h265[representation.$.height] = representation.$.bandwidth
-                                    }
-                                });
+                                if(adaptationset.$.contentType === "video"){
+                                    adaptationset.Representation.forEach(representation => {
+                                        if(representation.$.mimeType.includes("video")){
+                                            if (representation.$.codecs.includes("vp")) {
+                                                bitrateList.vp9[representation.$.height] = representation.$.bandwidth
+                                            } else if (representation.$.codecs.includes("avc")) {
+                                                bitrateList.h264[representation.$.height] = representation.$.bandwidth
+                                            } else if (representation.$.codecs.includes("hev")) {
+                                                bitrateList.h265[representation.$.height] = representation.$.bandwidth
+                                            }
+                                        }
+                                    });
+                                }
                             });
                             this.setState({
                                 allBandwiths: bitrateList
@@ -87,15 +79,17 @@ class VideoPage extends React.Component {
     chartInfoHandler = (info, codec) => {
         let tmpChartData = this.state.chartData;
         tmpChartData.forEach(eachCodec => {
-            eachCodec.data.push(
-                {
-                    "x": Math.round(info.playTime),
-                    "y": parseInt(this.state.allBandwiths[eachCodec.id][info.height])
-                })
+            if(Object.keys(this.state.allBandwiths[eachCodec.id]).length !== 0){
+                eachCodec.data.push(
+                    {
+                        "x": Math.round(info.playTime),
+                        "y": parseInt(this.state.allBandwiths[eachCodec.id][info.height]) / 1000000
+                    });
+                if(eachCodec.data.length > 30){
+                    eachCodec.data.shift()
+                }
+            }
         })
-
-        console.log(JSON.stringify(tmpChartData))
-
         this.setState({
             chartData: tmpChartData,
             codec: codec
