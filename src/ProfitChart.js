@@ -5,13 +5,13 @@ import 'shaka-player/dist/controls.css'
 class ProfitChart extends React.Component {
     render() {
         return (
-            <div style={{width:'100%',height:'300px'}}>
+            <div style={{width: '100%', height: '300px'}}>
 
                 <ResponsiveLine
                     data={this.props.chartData}
-                    margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-                    xScale={{ type: 'point' }}
-                    yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
+                    margin={{top: 50, right: 110, bottom: 50, left: 60}}
+                    xScale={{type: 'point'}}
+                    yScale={{type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false}}
                     axisTop={null}
                     axisRight={null}
                     axisBottom={{
@@ -22,7 +22,11 @@ class ProfitChart extends React.Component {
                         legend: 'Second',
                         legendOffset: 36,
                         legendPosition: 'middle',
-                        format: s => {let minute = Math.trunc(s/60);let second = s % 60;return ((minute < 10) ? '0' : '') + minute + ':' + ((second < 10) ? '0' : '') + second;}
+                        format: s => {
+                            let minute = Math.trunc(s / 60);
+                            let second = s % 60;
+                            return ((minute < 10) ? '0' : '') + minute + ':' + ((second < 10) ? '0' : '') + second;
+                        }
                     }}
                     axisLeft={{
                         orient: 'left',
@@ -33,11 +37,11 @@ class ProfitChart extends React.Component {
                         legendOffset: -40,
                         legendPosition: 'middle'
                     }}
-                    colors={{ scheme: 'nivo' }}
+                    colors={{scheme: 'nivo'}}
                     pointSize={10}
-                    pointColor={{ theme: 'background' }}
+                    pointColor={{theme: 'background'}}
                     pointBorderWidth={2}
-                    pointBorderColor={{ from: 'serieColor' }}
+                    pointBorderColor={{from: 'serieColor'}}
                     pointLabel="y"
                     pointLabelYOffset={-12}
                     useMesh={true}
@@ -68,6 +72,17 @@ class ProfitChart extends React.Component {
                         }
                     ]}
                 />
+
+                {
+                    (this.props.costs.currentCodec !== "h264" && this.props.costs.currentCodec !== "")?
+
+                        <p className={"lead text-center mt-5"}>Your browser supports {this.props.costs.currentCodec.toUpperCase()} codec. You
+                            downloaded {this.props.costs.currentCost} KB of data. Same data in AVC codec would
+                            be {this.props.costs.avcCost} KB<br/>
+                            That means your cost reduction will
+                            be {((this.props.costs.avcCost - this.props.costs.currentCost) * 0.025).toFixed(2)} USD assuming 1,000,000 Views
+                            and 0.025 USD Distribution Cost per GB</p>:""
+                }
 
             </div>
         )

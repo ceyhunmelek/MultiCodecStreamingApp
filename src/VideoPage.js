@@ -24,7 +24,12 @@ class VideoPage extends React.Component {
             "id": "h264",
             "color": "rgb(219,14,20)",
             "data": []
-        }]
+        }],
+        cost:{
+            currentCodec:"",
+            currentCost:0,
+            avcCost:0
+        }
     }
 
     componentDidMount() {
@@ -89,7 +94,16 @@ class VideoPage extends React.Component {
                     eachCodec.data.shift()
                 }
             }
-        })
+        });
+
+        let tmpCost = this.state.cost;
+        tmpCost.currentCodec = codec;
+        tmpCost.currentCost += Math.floor(this.state.allBandwiths[codec][info.height] / 8000)
+        tmpCost.avcCost += Math.floor(this.state.allBandwiths["h264"][info.height] / 8000 )
+        console.log(tmpCost)
+
+
+
         this.setState({
             chartData: tmpChartData,
             codec: codec
@@ -103,7 +117,7 @@ class VideoPage extends React.Component {
                     <Player chartHandler={this.chartInfoHandler} video={this.state.videoData}/>
                 </div>
                 <div className="row">
-                    <ProfitChart chartData={this.state.chartData}/>
+                    <ProfitChart chartData={this.state.chartData} costs={this.state.cost}/>
                 </div>
             </div>)
     }
