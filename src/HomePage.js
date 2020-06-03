@@ -24,8 +24,10 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <div className="container">
+            <div className="container my-4">
                 <div className="row">
+                    <p className={"display-4"}>Multicodec Dash Video Streaming Service</p>
+                    <p className={"lead"}>By <a href={"https://github.com/ceyhunmelek"}>Ceyhun Melek</a> and  <a href={"https://github.com/mehmetalibayir"}>Mehmet Ali Bayır</a>  </p>
                     {
                         this.state.videos.map(video => <VideoListItem key={video.id} video={video} />)
                     }
