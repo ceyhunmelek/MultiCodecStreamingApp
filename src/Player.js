@@ -35,11 +35,11 @@ class Player extends React.Component {
                 }
             })[0].videoCodec
             if(codec.toLowerCase().includes("vp")){
-                codec = "VP9"
+                codec = "vp9"
             }else if(codec.toLowerCase().includes("hev")){
-                codec = "HEVC"
+                codec = "h265"
             }else{
-                codec = "AVC"
+                codec = "h264"
             }
             if(currentStats.stateHistory[currentStats.stateHistory.length -1].state === "playing"){
                 this.props.chartHandler(currentStats,codec);
@@ -60,7 +60,7 @@ class Player extends React.Component {
 
     render() {
         return (
-            <div style={{width: '100%'}} ref={this.uiRef}>
+            <div className={"mx-auto mt-5"} style={{width: '50%'}} ref={this.uiRef}>
                 <video ref={this.playerRef}
                        width="100%"
                        autoPlay={true}></video>
