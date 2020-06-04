@@ -29,6 +29,11 @@ class Player extends React.Component {
 
         this.timeRefInterval = setInterval(() => {
             let currentStats = this.player.getStats();
+            /*let buffered = this.playerRef.current.buffered;
+            for (let i = 0; i < buffered.length; i++) {
+                console.log("Current Buffer:", buffered.start(i),"-", buffered.end(i));
+            }*/
+
             let codec = this.player.getVariantTracks().filter(track => {
                 if (track.active === true) {
                     return track
@@ -60,11 +65,16 @@ class Player extends React.Component {
 
     render() {
         return (
-            <div className={"mx-auto mt-5"} style={{width: '50%'}} ref={this.uiRef}>
-                <video ref={this.playerRef}
-                       width="100%"
-                       autoPlay={true}></video>
-            </div>)
+            <div className={"mac-container"}>
+                <div>
+                    <div ref={this.uiRef}>
+                        <video className={""} ref={this.playerRef}
+                               width={'100%'}
+                               autoPlay={true}></video>
+                    </div>
+                </div>
+            </div>
+        )
     }
 }
 
