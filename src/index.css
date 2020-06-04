@@ -1,10 +1,10 @@
 .mac-container{
     background: url('https://firebasestorage.googleapis.com/v0/b/multicodecdashdemo.appspot.com/o/macresized%20(1).png?alt=media&token=83d71f88-6889-4765-8e99-89f68d14c65a') no-repeat top left transparent;
-    background-size: 600px 458px;
+    background-size: 495px 378px;
     margin: auto;
-    width: 600px; /* Adjust TV image width */
-    height: 458px; /* Adjust TV image height */
-    padding: 20px 50px 143px 50px;
+    width: 495px;
+    height: 378px;
+    padding: 15px 15px 118px 15px;
     display: flex;
     align-items: center;
     justify-content: center;
