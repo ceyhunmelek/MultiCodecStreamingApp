@@ -5,13 +5,13 @@ import 'shaka-player/dist/controls.css'
 class ProfitChart extends React.Component {
     render() {
         return (
-            <div style={{width: '100%', height: '300px'}}>
+            <div style={{width: '100%', height: '500px'}}>
 
                 <ResponsiveLine
                     data={this.props.chartData}
-                    margin={{top: 50, right: 110, bottom: 50, left: 60}}
+                    margin={{top: 20, right: 110, bottom: 50, left: 60}}
                     xScale={{type: 'point'}}
-                    yScale={{type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false}}
+                    yScale={{type: 'linear', min: 0, max: 'auto', stacked: false, reverse: false}}
                     axisTop={null}
                     axisRight={null}
                     axisBottom={{
@@ -37,7 +37,7 @@ class ProfitChart extends React.Component {
                         legendOffset: -40,
                         legendPosition: 'middle'
                     }}
-                    colors={{scheme: 'nivo'}}
+                    colors={{scheme: 'dark2'}}
                     pointSize={10}
                     pointColor={{theme: 'background'}}
                     pointBorderWidth={2}
@@ -72,17 +72,6 @@ class ProfitChart extends React.Component {
                         }
                     ]}
                 />
-
-                {
-                    (this.props.costs.currentCodec !== "h264" && this.props.costs.currentCodec !== "")?
-
-                        <p className={"lead text-center mt-5"}>Your browser supports {this.props.costs.currentCodec.toUpperCase()} codec. You
-                            downloaded {this.props.costs.currentCost} KB of data. Same data in AVC codec would
-                            be {this.props.costs.avcCost} KB<br/>
-                            That means your cost reduction will
-                            be {((this.props.costs.avcCost - this.props.costs.currentCost) * 0.025).toFixed(2)} USD assuming 1,000,000 Views
-                            and 0.025 USD Distribution Cost per GB</p>:""
-                }
 
             </div>
         )
