@@ -6,30 +6,15 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import CONFIG from './firebaseConfig';
 import ProfitChart from "./ProfitChart";
+import BufferBar from "./BufferBar";
 
 class VideoPage extends React.Component {
     state = {
-        chartInfo: [],
         allBandwiths:{},
         codec: '',
-        chartData: [{
-            "id": "vp9",
-            "color": "rgb(255,112,0)",
-            "data": []
-        }, {
-            "id": "h265",
-            "color": "rgb(5,168,255)",
-            "data": []
-        }, {
-            "id": "h264",
-            "color": "rgb(219,14,20)",
-            "data": []
-        }],
-        cost:{
-            currentCodec:"",
-            currentCost:0,
-            avcCost:0
-        }
+        chartData: [],
+        cost:{},
+        buffer:[]
     }
 
     componentDidMount() {
@@ -37,12 +22,6 @@ class VideoPage extends React.Component {
             firebase.initializeApp(CONFIG);
         }
         let bitrateList = {
-            vp9: {
-            },
-            h264: {
-            },
-            h265: {
-            }
         }
         firebase.firestore().collection("videos").doc(this.props.match.params.id).get().then((doc) => {
             if (doc.exists) {
@@ -57,16 +36,32 @@ class VideoPage extends React.Component {
                                     adaptationset.Representation.forEach(representation => {
                                         if(representation.$.mimeType.includes("video")){
                                             if (representation.$.codecs.includes("vp")) {
+                                                if(bitrateList.vp9 === undefined){
+                                                    bitrateList.vp9 = {}
+                                                }
                                                 bitrateList.vp9[representation.$.height] = representation.$.bandwidth
                                             } else if (representation.$.codecs.includes("avc")) {
+                                                if(bitrateList.h264 === undefined){
+                                                    bitrateList.h264 = {}
+                                                }
                                                 bitrateList.h264[representation.$.height] = representation.$.bandwidth
                                             } else if (representation.$.codecs.includes("hev")) {
+                                                if(bitrateList.h265 === undefined){
+                                                    bitrateList.h265 = {}
+                                                }
                                                 bitrateList.h265[representation.$.height] = representation.$.bandwidth
                                             }
                                         }
                                     });
                                 }
                             });
+                            Object.keys(bitrateList).forEach(codecToData => {
+                                this.state.chartData.push({
+                                    "id": codecToData,
+                                    "data": []
+                                })
+                            })
+
                             this.setState({
                                 allBandwiths: bitrateList
                             });
@@ -79,9 +74,7 @@ class VideoPage extends React.Component {
         });
     }
 
-
-
-    chartInfoHandler = (info, codec) => {
+    chartInfoHandler = (info, codec,buffer) => {
         let tmpChartData = this.state.chartData;
         tmpChartData.forEach(eachCodec => {
             if(Object.keys(this.state.allBandwiths[eachCodec.id]).length !== 0){
@@ -97,27 +90,76 @@ class VideoPage extends React.Component {
         });
 
         let tmpCost = this.state.cost;
-        tmpCost.currentCodec = codec;
-        tmpCost.currentCost += Math.floor(this.state.allBandwiths[codec][info.height] / 8000)
-        tmpCost.avcCost += Math.floor(this.state.allBandwiths["h264"][info.height] / 8000 )
-        console.log(tmpCost)
+        Object.keys(this.state.allBandwiths).forEach(codecToCost => {
+            if(tmpCost[codecToCost] === undefined){
+                tmpCost[codecToCost] = 0
+            }
+            tmpCost[codecToCost] += Math.floor(this.state.allBandwiths[codecToCost][info.height] / 8000)
+        })
 
-
+        let tmpBuffer = [
+            {
+                "id": "1",
+                "Played": parseInt((buffer.time - buffer.start).toFixed(2)),
+                "Will Play": parseInt((buffer.end - buffer.time).toFixed(2))
+            }
+        ]
 
         this.setState({
             chartData: tmpChartData,
-            codec: codec
+            cost:tmpCost,
+            codec: codec,
+            buffer: tmpBuffer
         })
     }
 
     render() {
         return (
             <div className="container">
-                <div className="row">
-                    <Player chartHandler={this.chartInfoHandler} video={this.state.videoData}/>
+                <div className="row mt-5">
+                    <div className="col-12 col-lg-6">
+                        <Player chartHandler={this.chartInfoHandler} video={this.state.videoData}/>
+                    </div>
+                    <div className="col-12 col-lg-6 pl-lg-5">
+                        <div className="table">
+                            <table className="table"><thead>
+                            <tr>
+                                <th scope="col"></th>
+                                {
+                                    Object.keys(this.state.cost).map(costOfCodec => {
+                                        return <th key={costOfCodec} scope="col">{costOfCodec.toUpperCase()}{(costOfCodec ===this.state.codec)?"*":""}</th>
+                                    })
+                                }
+                            </tr>
+                            </thead>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">Data Downloaded</th>
+                                    {
+                                        Object.keys(this.state.cost).map(costOfCodec => {
+                                            return <td key={costOfCodec}>{(this.state.cost[costOfCodec] / 1000).toFixed(1)} MB</td>
+                                        })
+                                    }
+                                </tr>
+                                <tr>
+                                    <th scope="row">Assumed Cost</th>
+                                    {
+                                        Object.keys(this.state.cost).map(costOfCodec => {
+                                            return <td key={costOfCodec}>{(this.state.cost[costOfCodec] * 0.025).toFixed(1)} $</td>
+                                        })
+                                    }
+                                </tr>
+                                </tbody>
+                            </table>
+                            <small>*While calculating cost, we assumed 1,000,000 Views and 0.025 USD Distribution Cost per GB</small>
+                            <p className={"lead mb-0 mt-4"}>Buffer Size</p>
+                            <BufferBar data={this.state.buffer}></BufferBar>
+                        </div>
+                    </div>
                 </div>
                 <div className="row">
-                    <ProfitChart chartData={this.state.chartData} costs={this.state.cost}/>
+                    <p className={"lead mb-0 mt-4 text-center w-100"}>Codec Comparison</p>
+                    <ProfitChart chartData={this.state.chartData}/>
                 </div>
             </div>)
     }
