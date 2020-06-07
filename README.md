@@ -54,7 +54,7 @@ npm start
 
 You can create your own videos via [our transcoder](https://github.com/mehmetalibayir/MulticodecTranscoder) or you can use existing videos listed below.
 
-|Name|Desc|Manifes File|Source|
+|Name|Desc|Manifest File|Source|
 |:---|:---|:---:|:---:|
 |Bernese Oberland|A video from [pixabay](https://pixabay.com/) has encoded by our transcoder|[URL](https://storage.ceyhun.codes/datasets/BerneseOberland/dash.mpd)|[URL](https://pixabay.com/tr/videos/bernese-oberland-bulutlar-sis-9794/)
 |Drone Footage|A video from [pexels](https://www.pexels.com/) has encoded by our transcoder|[URL](https://storage.ceyhun.codes/datasets/DroneFootage/dash.mpd)|[URL](https://www.pexels.com/video/drone-footage-of-a-town-854222/)
